@@ -27,7 +27,7 @@ public class Partitions {
 	 * @param max the maximum integer of the range
 	 * @return the resulting partition object
 	 */
-	public static Partition<Integer> intRange(int min, int max) {
+	public static Partition<Integer> intRange(final int min, final int max) {
 		return new Partition<Integer>(){
 			public int maxID() { return max; }
 			public int toID(Integer x) { 

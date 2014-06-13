@@ -11,10 +11,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 
 
-public abstract class StatisticsCollector<T> {
+public abstract class StatisticsCollector<T> implements ExcelSheetExporter {
 	
 	protected StatisticsSpec<T> spec;
 	protected MultiDimArray<List<Double>> partitionedStats;
+	
 
 	/**
 	 * @param spec the specification object
@@ -88,11 +89,8 @@ public abstract class StatisticsCollector<T> {
 		objectBuffer.clear();
 	}
 	
-	
-	/**
-	   * Adds all internally collected statistics to the given excel sheet
-	   */
-	void exportStatistics(XSSFSheet sheet) {
+	@Override
+	public void exportData(XSSFSheet sheet) {
 	    flushBuffer();
 	    // print first row, with all the names
 	    XSSFRow row = sheet.createRow(0);

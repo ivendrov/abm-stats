@@ -32,7 +32,7 @@ public class Partitions {
 			public int maxID() { return max; }
 			public int toID(Integer x) { 
 				if (x > min && x <= max) return x - min;
-				else return -1;
+				else return Partition.INVALID_ID;
 			}
 			public String idLabel(int id) { return String.format("%d", id + min);}
 		};

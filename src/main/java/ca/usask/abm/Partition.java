@@ -9,12 +9,17 @@ package ca.usask.abm;
  */
 public interface Partition<T> {
 	/**
+	 * the value returned by toID if there is no ID specified
+	 */
+	
+	public static final int INVALID_ID = -1;
+	/**
 	 * @return the maximal possible identifier
 	 */
 	int maxID();
 	
 	/**
-	 * @return the identifier corresponding to the given element, or (-1) if there is no such identifier
+	 * @return the identifier corresponding to the given element, or INVALID_ID if there is no such identifier
 	 */
 	int toID(T elem);
 	

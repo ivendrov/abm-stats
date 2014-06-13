@@ -21,12 +21,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author isv452
  *
  */
-public class Delegate<Model, Event> {
+public class ABMStats<Model, Event> {
 	private HashMap<Observer<Model>, Integer> prevIDs = new HashMap<Observer<Model>, Integer>();
 	private List<Observer<Event>> eventObservers = new ArrayList<Observer<Event>>();
 	private LinkedHashMap<String, ExcelSheetExporter> exporters = new LinkedHashMap<String, ExcelSheetExporter>();
 	
-	
+	/**
+	 * Add an agent collector to the 
+	 * @param name
+	 * @param observer
+	 */
 	public <Agent> void addAgentCollector(String name, AgentStatisticsCollector<Model, Agent> observer){
 		prevIDs.put(observer, Partition.INVALID_ID);
 		exporters.put(name, observer);
@@ -68,6 +72,7 @@ public class Delegate<Model, Event> {
 	
 	/**
 	 * Export all the collectors' data into an excel spreadsheet at the given path (e.g. ~/mydata.xlsx)
+	 * Each collector will generate a sheet, and sheets will be in the order that the collectors were added
 	 * @param filepath
 	 * @throws IOException if file cannot be created or written to
 	 */

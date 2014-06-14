@@ -27,15 +27,20 @@ public class ABMStats<Model, Event> {
 	private LinkedHashMap<String, ExcelSheetExporter> exporters = new LinkedHashMap<String, ExcelSheetExporter>();
 	
 	/**
-	 * Add an agent collector to the 
-	 * @param name
-	 * @param observer
+	 * Add an agent statistics collector to the ABMStats object
+	 * @param name the excel sheet name used when the collector's data is eventually exported
+	 * @param observer the agent collector
 	 */
 	public <Agent> void addAgentCollector(String name, AgentStatisticsCollector<Model, Agent> observer){
 		prevIDs.put(observer, Partition.INVALID_ID);
 		exporters.put(name, observer);
 	}
 	
+	/**
+	 * Add an event statistics collector to the ABMStats object
+	 * @param name the excel sheet name used when the collector's data is eventually exported
+	 * @param observer the event collector
+	 */
 	public <SpecificEvent> void addEventCollector(String name, EventStatisticsCollector<Event,SpecificEvent> observer){
 		eventObservers.add(observer);
 		exporters.put(name, observer);

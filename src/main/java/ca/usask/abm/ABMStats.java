@@ -76,21 +76,40 @@ public class ABMStats<Model, Event> {
 	}
 	
 	/**
-	 * Export all the collectors' data into an excel spreadsheet at the given path (e.g. ~/mydata.xlsx)
+	 * Export all the collectors' data into an excel spreadsheet at the given path (e.g. mydata.xlsx)
 	 * Each collector will generate a sheet, and sheets will be in the order that the collectors were added
 	 * @param filepath
 	 * @throws IOException if file cannot be created or written to
 	 */
-	public void exportToSpreadsheet(String filepath) throws IOException{
+	public void exportToSpreadsheet(String filepath){
 		File file = new File(filepath);
-		file.mkdirs();
-		FileOutputStream out = new FileOutputStream(file);
+		if (file.getParentFile() != null) {
+			file.getParentFile().mkdirs();
+		}
+		if (file.exists()) file.delete();
+		
 		XSSFWorkbook wb = new XSSFWorkbook();
+		wb.createSheet("Bla");
 		for (String name : exporters.keySet()){
+			System.out.println(name);
 			exporters.get(name).exportData(wb.createSheet(name));
 		}
-		wb.write(out);
-		out.close();
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(file);
+			wb.write(out);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (out != null) {
+				try {
+					out.flush();
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	

@@ -9,6 +9,8 @@ import java.util.List;
  * Container class whose fields specify a general statistics collection process,
  * and associated helper methods
  * @author isv452
+ * 
+ * @param <T> the basic data type over which statistics are collected
  *
  */
 public class StatisticsSpec<T> {
@@ -34,7 +36,7 @@ public class StatisticsSpec<T> {
 	
 	/**
 	 * @return the list of partition dimensions in this spec
-	 *         = map (p -> p.maxID() + 1) partitions
+	 *         = map (_.maxID() + 1) partitions
 	 */
 	public List<Integer> partitionDimensions(){
 		ArrayList<Integer> dimensions = new ArrayList<Integer>();
@@ -48,7 +50,7 @@ public class StatisticsSpec<T> {
 	 * 
 	 * @param ts a collection of Ts
 	 * @return the results of evaluating all the statistics on the collection
-	 *         = map (s -> s.collect(ts)) statistics
+	 *         = map (_.collect(ts)) statistics
 	 */
 	public List<Double> evalStatisticsOn(Collection<T> ts){
 		ArrayList<Double> statValues = new ArrayList<Double>();

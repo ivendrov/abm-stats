@@ -6,7 +6,7 @@ import java.util.Collection;
  * A functional interface for statistics over collections
  * @author isv452
  *
- * @param <T>
+ * @param <T> the data type over which statistics are collected
  */
 public interface Statistic<T> {
 	/**

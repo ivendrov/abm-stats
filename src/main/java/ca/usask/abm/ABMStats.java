@@ -12,12 +12,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
- * The main entry point for the library.
+ * The main entry point for the library. <br>
  * 
- * Typical use: 
- * 	 1) before model starts, parameterize the collection process using addAgentCollector and addEventCollector
- *   2) as the model runs, call timeChanged() and event() as appropriate
- *   3) after model terminates, use exportToSpreadsheet() to output all the statistics as an excel spreadsheet
+ * Typical use: <br>
+ * 	 1) before model starts, parameterize the collection process 
+ * 		using addAgentCollector and addEventCollector <br>
+ *   2) as the model runs, call timeChanged() and event() as appropriate <br>
+ *   3) after model terminates, use exportToSpreadsheet() 
+ *   	to output all the statistics as an excel spreadsheet <br>
  * @author isv452
  *
  */
@@ -30,6 +32,7 @@ public class ABMStats<Model, Event> {
 	 * Add an agent statistics collector to the ABMStats object
 	 * @param name the excel sheet name used when the collector's data is eventually exported
 	 * @param observer the agent collector
+	 * @param <Agent> the type of agent being observed
 	 */
 	public <Agent> void addAgentCollector(String name, AgentStatisticsCollector<Model, Agent> observer){
 		prevIDs.put(observer, Partition.INVALID_ID);
@@ -40,6 +43,7 @@ public class ABMStats<Model, Event> {
 	 * Add an event statistics collector to the ABMStats object
 	 * @param name the excel sheet name used when the collector's data is eventually exported
 	 * @param observer the event collector
+	 * @param <SpecificEvent> the type of event being observed, usually a subclass of Event
 	 */
 	public <SpecificEvent> void addEventCollector(String name, EventStatisticsCollector<Event,SpecificEvent> observer){
 		eventObservers.add(observer);
@@ -76,10 +80,9 @@ public class ABMStats<Model, Event> {
 	}
 	
 	/**
-	 * Export all the collectors' data into an excel spreadsheet at the given path (e.g. mydata.xlsx)
+	 * Export all the collectors' data into an excel spreadsheet at the given path (e.g. mydata.xlsx). 
 	 * Each collector will generate a sheet, and sheets will be in the order that the collectors were added
-	 * @param filepath
-	 * @throws IOException if file cannot be created or written to
+	 * @param filepath the path at which to generate the spreadsheet
 	 */
 	public void exportToSpreadsheet(String filepath){
 		File file = new File(filepath);

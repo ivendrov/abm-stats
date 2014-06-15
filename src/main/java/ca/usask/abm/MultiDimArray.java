@@ -42,7 +42,7 @@ public class MultiDimArray<T> extends AbstractList<T>{
 	}
 	
 	/**
-	 * @precond valid(index)
+	 * PRECONDITION: valid(index)
 	 * @param index a valid coordinate index
 	 * @return the corresponding linear index
 	 */
@@ -60,10 +60,10 @@ public class MultiDimArray<T> extends AbstractList<T>{
 	}
 	
 	/**
-	 * @precond 0 <= index < size()
+	 * PRECONDITION: index is between 0 and size()
 	 * @param index a given linear index
 	 * @return the corresponding co-ordinate index
-	 * @postcond toLinearIndex(fromLinearIndex(index)) == index
+	 * POSTCONDITION: toLinearIndex(fromLinearIndex(index)) == index
 	 */
 	public Collection<Integer> fromLinearIndex(int index){
 		ArrayList<Integer> coord = new ArrayList<Integer>(dims.size());

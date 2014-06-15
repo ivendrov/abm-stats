@@ -8,7 +8,7 @@ import java.util.List;
  * A container class that stores a value and an associated name
  * @author isv452
  *
- * @param <T>
+ * @param <T> the value type
  */
 public class Named<T> {
 	private T value;
@@ -25,7 +25,8 @@ public class Named<T> {
 	/**
 	 * @param ts a list of named values
 	 * @return a list of their names, in the same order
-	 * 		   = map (t -> t.getName())
+	 * 		   = map (_.getName())
+	 * @param <T> the value type
 	 */
 	public static <T> List<String> getNames(Collection<Named<T>> ts){
 		ArrayList<String> names = new ArrayList<String>();

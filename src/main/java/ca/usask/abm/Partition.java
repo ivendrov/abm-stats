@@ -19,11 +19,13 @@ public interface Partition<T> {
 	int maxID();
 	
 	/**
+	 * @param elem the given element
 	 * @return the identifier corresponding to the given element, or INVALID_ID if there is no such identifier
 	 */
 	int toID(T elem);
 	
 	/**
+	 * @param id an identifier in the range [0, maxID]
 	 * @return a text representation of the subset associated with the given identifier
 	 * (e.g. for a partition of the real line, this could be "[0, 1)")
 	 */

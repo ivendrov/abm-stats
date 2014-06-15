@@ -12,6 +12,8 @@ public class Partitions {
 	 * @param partition the existing partition
 	 * @param accessor the accessor function
 	 * @return the partition resulting conceptually from applying the accessor to each element of B
+	 * @param <A> existing partition type
+	 * @param <B> result partition type
 	 */
 	public static <A, B> Partition<B> lift(final Partition<A> partition, final Function<B,A> accessor){
 		return new Partition<B>() {
@@ -40,6 +42,10 @@ public class Partitions {
 
 	/**
 	 * Partitions an interval on the real line into a set of half-open intervals of given step size
+	 * @param min the minimum real of the range
+	 * @param step the step size
+	 * @param max the range maximum
+	 * @return the resulting partition object
 	 */
 	 public static Partition<Double> range(final double min, final double step, final double max) { 
 		 return new Partition<Double>() {

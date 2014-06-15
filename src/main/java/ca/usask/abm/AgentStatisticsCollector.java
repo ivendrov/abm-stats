@@ -3,7 +3,7 @@ package ca.usask.abm;
 import java.util.ArrayList;
 
 /**
- * A statistics collector which collects statistics over a particular
+ * Collects statistics over a particular
  * set of agents in a model. Every time its update() gets called, it will
  * process statistics for all agents indicated by agentAccessor()
  * 

@@ -10,21 +10,6 @@ import java.util.Collection;
  */
 public class Partitions {
 	
-	/**
-	 * Creates a partition of type B using an existing partition of type A
-	 * @param partition the existing partition
-	 * @param accessor the accessor function
-	 * @return the partition resulting conceptually from applying the accessor to each element of B
-	 * @param <A> existing partition type
-	 * @param <B> result partition type
-	 */
-	public static <A, B> Partition<B> lift(final Partition<A> partition, final Function<B,A> accessor){
-		return new Partition<B>() {
-			public int maxID(){ return partition.maxID();}
-			public int toID(B b) { return partition.toID(accessor.apply(b));}
-			public String idLabel(int id) { return partition.idLabel(id);}
-		};
-	}
 	
 	/**
 	 * Creates a partition from an (inclusive) range of integers, with each integer associated with a separate id

@@ -11,4 +11,5 @@ public interface Function<T, U> {
 	 * @return the result of applying the function to the argument
 	 */
 	U apply(T argument);
+
 }

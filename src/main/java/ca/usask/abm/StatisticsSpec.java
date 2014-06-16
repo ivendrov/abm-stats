@@ -35,6 +35,27 @@ public class StatisticsSpec<T> {
 	}
 	
 	/**
+	 * Constructor with no condition (same as the main constructor with a Function that always returns true)
+	 * @param partitions the dimensions along which to split the objects into categories
+	 * @param statistics the statistics to apply to each category
+	 */
+	public StatisticsSpec(
+			Collection<Named<Partition<Timed<T>>>> partitions,
+			Collection<Named<Statistic<T>>> statistics) {
+		super();
+		this.condition = constant(true);
+		this.partitions = partitions;
+		this.statistics = statistics;
+	}
+	
+	
+	private static <T, U> Function<T,U> constant (final U output){
+		return new Function<T,U>() {
+			public U apply(T argument) { return output; }
+		};
+	}
+	
+	/**
 	 * @return the list of partition dimensions in this spec
 	 *         = map (_.maxID() + 1) partitions
 	 */

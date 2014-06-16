@@ -1,5 +1,8 @@
 package ca.usask.abm;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Consists entirely of static methods used to create and combine common types of partitions
  * @author isv452
@@ -69,6 +72,41 @@ public class Partitions {
 		        else 
 		        	return String.format("[%f, %f)", lowerBound, upperBound);
 		    }    
+		 };
+	 }
+	 
+	 /**
+	  * Splits the real line into a set of half-open intervals between the given points <br>
+	  * So the intervals are [min, es(0)), [es(0), es(1)), ... [es(n), max)
+	  * @param es the endpoints of the intervals, in increasing order
+	  * @return the resulting partition
+	  */
+	 public static Partition<Double> between(final Collection<Double> es){
+		 return new Partition<Double>(){
+			private ArrayList<Double> endpoints = new ArrayList<Double>(es);
+			
+			@Override
+			public int maxID() {
+				return endpoints.size();
+			}
+
+			@Override
+			public int toID(Double elem) {
+				int index = 0;
+				for (double e : endpoints){
+					if (elem < e) return index;
+				}
+				// must be greater than any element in the collection
+				return maxID();
+			}
+
+			@Override
+			public String idLabel(int id) {
+				if (id == maxID()) return String.format("[%f, max)", endpoints.get(id-1));
+			    else if (id == 0) return String.format("[min, %f)", endpoints.get(0));
+			    else return String.format("[%f, %f)", endpoints.get(id-1), endpoints.get(id));
+			}
+			 
 		 };
 	 }
 }

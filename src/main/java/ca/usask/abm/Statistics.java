@@ -23,6 +23,23 @@ public class Statistics {
    }
    
    /**
+    * @param predicate a predicate
+    * @return a statistic that counts the number of elements in the collection satisfying the given predicate
+    */
+   public static <T> Statistic<T> count(final Function<T, Boolean> predicate) { 
+	   return new Statistic<T>(){
+		   @Override
+		   public Double apply(Collection<T> data) { 
+			   int count = 0;
+			   for (T t : data) {
+				   if (predicate.apply(t)) count++;
+			   }
+			   return (double) count;
+		   }
+	   };
+   }
+   
+   /**
     * a statistic that computes the mean of all elements in the collection,
     * or returns 0 if the collection is empty.
     */

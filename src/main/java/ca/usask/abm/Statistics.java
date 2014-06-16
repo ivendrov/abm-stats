@@ -19,7 +19,7 @@ public class Statistics {
    public static <T> Statistic<T> count() { 
 	   return new Statistic<T>(){
 		   @Override
-		   public double collect(Collection<T> data) { return data.size(); }
+		   public Double apply(Collection<T> data) { return (double) data.size(); }
 	   };
    }
    
@@ -29,11 +29,11 @@ public class Statistics {
     */
    public static Statistic<Double> mean = new Statistic<Double>() {
 		@Override
-		public double collect(Collection<Double> data){
+		public Double apply(Collection<Double> data){
 			double sum = 0;
 			int count = 0;
 			for (double d : data) { sum += d; count++; }
-			if (count == 0) return 0;
+			if (count == 0) return 0.0;
 			return sum / count;
 		}
 	};
@@ -54,7 +54,7 @@ public class Statistics {
 			final Percentile p = new Percentile(percentile);
 			
 			@Override
-			public double collect(Collection<Double> data) {
+			public Double apply(Collection<Double> data) {
 				// convert to array
 				double[] d = ArrayUtils.toPrimitive((Double[]) data.toArray());
 				
@@ -76,10 +76,10 @@ public class Statistics {
 	public static <T, U> Statistic<T> lift(final Statistic<U> stat, final Function<T,U> accessor){ 
 		return new Statistic<T>(){
 			@Override
-			public double collect(Collection<T> data){
+			public Double apply(Collection<T> data){
 				ArrayList<U> us = new ArrayList<U>(data.size());
 				for (T datum : data) us.add(accessor.apply(datum));
-				return stat.collect(us);
+				return stat.apply(us);
 			}
 		};
 	}

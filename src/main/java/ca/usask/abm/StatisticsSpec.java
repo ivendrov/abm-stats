@@ -55,7 +55,7 @@ public class StatisticsSpec<T> {
 	public List<Double> evalStatisticsOn(Collection<T> ts){
 		ArrayList<Double> statValues = new ArrayList<Double>();
 		for (Named<Statistic<T>> stat : statistics){
-			statValues.add(stat.getValue().collect(ts));
+			statValues.add(stat.getValue().apply(ts));
 		}
 		return statValues;
 	}

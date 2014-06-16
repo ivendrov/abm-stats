@@ -8,7 +8,7 @@ package ca.usask.abm;
  * 
  * @author isv452
  *
- * @param <Event> the most general model event type
+ * @param <Event> the most general model event type. MUST be a value (immutable) object
  * @param <SpecificEvent> the specific event type that this event collector is concerned with
  * 						(usually a subtype of Event)
  */

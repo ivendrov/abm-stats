@@ -1,10 +1,9 @@
 package ca.usask.abm;
 
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.ArrayList;
 import java.util.Collection;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 /**
  * Contains only static methods that 
@@ -64,23 +63,4 @@ public class Statistics {
 		};
 	}
 	
-	/**
-	 * Creates a statistic over values of type T by applying an accessor to extract a
-	 * values of type U, then applying a statistic over U on the result.
-	 * @param <U> the type of the existing statistic
-	 * @param <T> the type of the resulting statistic
-	 * @param stat the existing statistic
-	 * @param accessor the accessor function
-	 * @return the resulting statistic
-	 */
-	public static <T, U> Statistic<T> lift(final Statistic<U> stat, final Function<T,U> accessor){ 
-		return new Statistic<T>(){
-			@Override
-			public Double apply(Collection<T> data){
-				ArrayList<U> us = new ArrayList<U>(data.size());
-				for (T datum : data) us.add(accessor.apply(datum));
-				return stat.apply(us);
-			}
-		};
-	}
 }

@@ -35,9 +35,8 @@ public abstract class Partition<T> {
 	/**
 	 * Creates a partition of type U using this existing partition of type T
 	 * @param accessor the accessor function
-	 * @return the partition resulting conceptually from applying the accessor to each element of B
-	 * @param <A> existing partition type
-	 * @param <B> result partition type
+	 * @return the partition resulting conceptually from applying the accessor to each U
+	 * @param <U> result partition type
 	 */
 	public <U> Partition<U> lift(final Function<U,T> accessor){
 		final Partition<T> outer = this;

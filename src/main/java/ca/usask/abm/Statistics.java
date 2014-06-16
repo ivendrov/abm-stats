@@ -1,5 +1,8 @@
 package ca.usask.abm;
 
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,6 +37,32 @@ public class Statistics {
 			return sum / count;
 		}
 	};
+	
+	
+	/**
+	 * A statistic that computes the median of the collection in accordance
+	 * with the Apache Commons Math Percentile class.
+	 */
+	public static Statistic<Double> median = percentile(0.5);
+	/**
+	 * Computes the given percentile of the collection (or NaN if the collection is empty)
+	 * @param percentile the percentile to find
+	 * @return the value at the given percentile (interpolated in accordance with the Apache Commons Math Percentile class)
+	 */
+	public static Statistic<Double> percentile(final double percentile){
+		return new Statistic<Double>(){
+			final Percentile p = new Percentile(percentile);
+			
+			@Override
+			public double collect(Collection<Double> data) {
+				// convert to array
+				double[] d = ArrayUtils.toPrimitive((Double[]) data.toArray());
+				
+				return p.evaluate(d);
+			}
+			
+		};
+	}
 	
 	/**
 	 * Creates a statistic over values of type T by applying an accessor to extract a

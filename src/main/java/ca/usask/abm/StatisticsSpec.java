@@ -62,6 +62,7 @@ public class StatisticsSpec<T> {
 	public List<Integer> partitionDimensions(){
 		ArrayList<Integer> dimensions = new ArrayList<Integer>();
 		for (Named<Partition<Timed<T>>> p : partitions){
+			if (p.getValue().maxID() == Partition.INVALID_ID) System.err.println("Partition" + " " + p.getName() + "has invalid maxID");
 			dimensions.add(p.getValue().maxID() + 1); // +1 because maxID is inclusive
 		}
 		return dimensions;

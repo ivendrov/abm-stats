@@ -92,7 +92,6 @@ public class ABMStats<Model, Event> {
 		if (file.exists()) file.delete();
 		
 		XSSFWorkbook wb = new XSSFWorkbook();
-		wb.createSheet("Bla");
 		for (String name : exporters.keySet()){
 			System.out.println(name);
 			exporters.get(name).exportData(wb.createSheet(name));

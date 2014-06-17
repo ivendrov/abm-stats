@@ -18,14 +18,18 @@ public class MultiDimArray<T> extends AbstractList<T>{
 	/**
 	 * Creates a new array given a sequence of dimensions
 	 * @param ds a nonempty sequence of positive integers
+	 * @param initialValue the initial value of each array cell
 	 */
-	public MultiDimArray(Collection<Integer> ds){
+	public MultiDimArray(Collection<Integer> ds, T initialValue){
 		dims = ds;
 		int totalLength = 1;
 		for (int d : dims){
 			totalLength *= d;
 		}
 		array = new ArrayList<T>(totalLength);
+		for (int i = 0; i < totalLength; i++){
+			array.add(initialValue);
+		}
 	}
 	
 	/**

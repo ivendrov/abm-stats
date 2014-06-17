@@ -23,15 +23,14 @@ public abstract class StatisticsCollector<T> implements ExcelSheetExporter {
 	public StatisticsCollector(StatisticsSpec<T> spec) {
 		super();
 		this.spec = spec;
+		
+		// statistics results on empty sequence
+		List<Double> result = spec.evalStatisticsOn(Collections.<T> emptyList());
+		
 		// create the n-dimensional statistics array
 		partitionedStats = new MultiDimArray<List<Double>>
-							(spec.partitionDimensions());
-		
-		// initialize statistics with results on empty sequence
-		List<Double> result = spec.evalStatisticsOn(Collections.<T> emptyList());
-		for (int i = 0; i < partitionedStats.size(); i++){
-			partitionedStats.set(0, result);
-		}
+							(spec.partitionDimensions(), result);
+
 	}
 	
 
@@ -61,7 +60,7 @@ public abstract class StatisticsCollector<T> implements ExcelSheetExporter {
 	    		sparseArray.get(index).add(obj.getValue());
 	    	else {
 	    		ArrayList<T> list = new ArrayList<T>();
-	    		list.add(index, obj.getValue());
+	    		list.add(obj.getValue());
 	    		sparseArray.put(index, list);
 	    	}
 	    }
@@ -97,7 +96,7 @@ public abstract class StatisticsCollector<T> implements ExcelSheetExporter {
 	    int col = 0;
 	    List<String> names = spec.partitionNames();
 	    names.addAll(spec.statisticNames());
-	    for (String name : spec.partitionNames()){
+	    for (String name : names){
 	    	row.createCell(col).setCellValue(name);
 	    	col++;
 	    }
@@ -115,6 +114,7 @@ public abstract class StatisticsCollector<T> implements ExcelSheetExporter {
 	      // print all the statistics
 	      for (double stat : partitionedStats.get(i)){
 	    	  row.createCell(col).setCellValue(stat);
+	    	  col++;
 	      }
 	    }
 	  } 

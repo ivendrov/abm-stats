@@ -7,7 +7,11 @@ import java.util.List;
 
 /**
  * Container class whose fields specify a general statistics collection process,
- * and associated helper methods
+ * and associated helper methods.
+ * 
+ * NOTE: while this class exposes mutable methods for convenience ({@link addPartition}, {@link addStatistic}, etc)
+ * these should only be used at initialization. Classes that use StatisticsSpec, especially {@link StatisticsCollector},
+ * expect the set of partitions and statistics to be constant.
  * @author isv452
  * 
  * @param <T> the basic data type over which statistics are collected
@@ -42,11 +46,53 @@ public class StatisticsSpec<T> {
 	public StatisticsSpec(
 			Collection<Named<Partition<Timed<T>>>> partitions,
 			Collection<Named<Statistic<T>>> statistics) {
-		super();
-		this.condition = constant(true);
-		this.partitions = partitions;
-		this.statistics = statistics;
+		this(StatisticsSpec.<T, Boolean>constant(true), partitions, statistics);
 	}
+	
+	/**
+	 * Constructor that creates initially empty sets of partitions and statistics, to be added using the various add* methods
+	 */
+	public StatisticsSpec(){
+		this(new ArrayList<Named<Partition<Timed<T>>>>(), new ArrayList<Named<Statistic<T>>>());
+	}
+	
+	/**
+	 * Adds a statistic to the spec
+	 * @param name the name of the statistic
+	 * @param stat the statistic itself
+	 */
+	public void addStatistic(String name, Statistic<T> stat){
+		statistics.add(Named.create(name, stat));
+	}
+	
+	/**
+	 * Adds a partition to the spec. If time is part of the partition criterion, use {@link addTimedPartition} instead
+	 * @param name the name of the partition
+	 * @param part the partition itself
+	 */
+	public void addPartition(String name, Partition<T> part){
+		partitions.add(Named.create(name, part.lift(Timed.<T>valueFunction())));
+	}
+	
+	/**
+	 * Adds a partition of a timed value to the spec.
+	 * @param name the name of the partition
+	 * @param part the partition itself
+	 */
+	public void addTimedPartition(String name, Partition<Timed<T>> part){
+		partitions.add(Named.create(name, part));
+	}
+	
+	/**
+	 * Adds a time partition to the spec (not to be confused with {@link addTimedPartition})
+	 * @param name the name of the partition
+	 * @param part the partition itself
+	 */
+	public void addTimePartition(String name, Partition<Double> part){
+		partitions.add(Named.create(name, part.lift(Timed.<T>timeFunction())));
+	}
+	
+	
 	
 	
 	private static <T, U> Function<T,U> constant (final U output){

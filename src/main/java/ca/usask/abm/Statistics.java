@@ -22,6 +22,7 @@ public class Statistics {
 	   };
    }
    
+   
    /**
     * @param predicate a predicate
     * @return a statistic that counts the number of elements in the collection satisfying the given predicate
@@ -33,6 +34,23 @@ public class Statistics {
 			   int count = 0;
 			   for (T t : data) {
 				   if (predicate.apply(t)) count++;
+			   }
+			   return (double) count;
+		   }
+	   };
+   }
+   
+   /**
+    * @param predicate a predicate
+    * @return a statistic that counts the number of elements in the collection NOT satisfying the given predicate
+    */
+   public static <T> Statistic<T> countNot(final Function<T, Boolean> predicate) { 
+	   return new Statistic<T>(){
+		   @Override
+		   public Double apply(Collection<T> data) { 
+			   int count = 0;
+			   for (T t : data) {
+				   if (! predicate.apply(t)) count++;
 			   }
 			   return (double) count;
 		   }

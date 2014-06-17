@@ -35,4 +35,12 @@ public class Named<T> {
 		}
 		return names;
 	}
+	
+	/**
+	 * A factory method that eliminates the necessity to specify the type parameter
+	 * @param n the name
+	 * @param val the value
+	 * @return a resulting named object
+	 */
+	public static <T> Named<T> create(String n, T val) { return new Named<T>(n, val);}
 }

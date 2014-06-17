@@ -20,7 +20,8 @@ public abstract class Partition<T> {
 	
 	/**
 	 * @param elem the given element
-	 * @return the identifier corresponding to the given element, or INVALID_ID if there is no such identifier
+	 * @return the identifier corresponding to the given element, or INVALID_ID if there is no such identifier, or if the 
+	 * argument is null
 	 */
 	public abstract int toID(T elem);
 	
@@ -38,11 +39,14 @@ public abstract class Partition<T> {
 	 * @return the partition resulting conceptually from applying the accessor to each U
 	 * @param <U> result partition type
 	 */
-	public <U> Partition<U> lift(final Function<U,T> accessor){
+	public final <U> Partition<U> lift(final Function<U,T> accessor){
 		final Partition<T> outer = this;
 		return new Partition<U>() {
 			public int maxID(){ return outer.maxID();}
-			public int toID(U b) { return outer.toID(accessor.apply(b));}
+			public int toID(U b) { if (b == null) return INVALID_ID;
+								   T t = accessor.apply(b);
+								   if (t == null) return INVALID_ID;
+								   return outer.toID(t);}
 			public String idLabel(int id) { return outer.idLabel(id);}
 		};
 	}

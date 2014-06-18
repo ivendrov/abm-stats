@@ -20,9 +20,9 @@ public class Partitions {
 	 */
 	public static Partition<Integer> intRange(final int min, final int max) {
 		return new Partition<Integer>(){
-			public int maxID() { return max; }
+			public int maxID() { return max - min; }
 			public int toID(Integer x) { 
-				if (x > min && x <= max) return x - min;
+				if (x >= min && x <= max) return x - min;
 				else return Partition.INVALID_ID;
 			}
 			public String idLabel(int id) { return String.format("%d", id + min);}

@@ -35,4 +35,5 @@ public abstract class Statistic<T> implements Function<Collection<T>, Double> {
 		};
 	}
 
+
 }

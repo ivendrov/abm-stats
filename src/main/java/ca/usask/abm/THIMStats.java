@@ -4,18 +4,21 @@ package ca.usask.abm;
 import java.util.Arrays;
 
 
-public class THIMStats<Model, Event, Sim> extends ABMStats<Model, Event> {
+public class THIMStats<Model, DeathEvent, Sim> extends ABMStats<Model, DeathEvent> {
 	
 	/**
 	 * @param endTime the time until which to collect statistics
 	 */
 	public THIMStats(double endTime,
 					Function<Model, Iterable<Sim>> sims,
-					Function<Sim, Double> education,
-					Function<Sim, Double> income,
-					Function<Sim, Double> health,
 					Function<Sim, Double> age,
-					Function<Sim, Boolean> doneEducation){
+					Function<Sim, Double> education,
+					Function<Sim, Double> health,	
+					Function<Sim, Double> income,									
+					Function<Sim, Boolean> doneEducation,
+					Function<Sim, Sim> parent,
+					Class<DeathEvent> deathEventClass,
+					Function<DeathEvent, Double> ageAtDeath){
 		
 		Partition<Double> INCOME_GROUP_20 = Partitions.between(
 				Arrays.<Double>asList(1.0,
@@ -59,61 +62,74 @@ public class THIMStats<Model, Event, Sim> extends ABMStats<Model, Event> {
 			// create spec
 			StatisticsSpec<Sim> spec = new StatisticsSpec<Sim>();
 	        // define the partitions
-			spec.addPartition("Age", Partitions.range(0.0, 10.0, 100).lift(age));
 			spec.addPartition("Health", Partitions.range(0.0, 0.1, 1.0).lift(health));
+			spec.addPartition("Age", Partitions.range(0.0, 5.0, 100).lift(age));
 			spec.addTimePartition("Decade", decadePartition);
 			// define the statistics
 			spec.addStatistic("Count", count);
 			
 			hDistByAgeDec = new AgentStatisticsCollector<Model,Sim>(sims, spec, decadePartition);
 		}
-		  /*
-		  val pDistByAgeDec = {
-			  val partitions : Seq[(String, Partition[Sim])] = Seq (
-			      ("Age", Partition.inject(100).lift(_.age)))
-			  new AgentStatisticsCollector(agentAccessor, partitions, justCount, Some(1), 0 to endTime by 10)
-		  }
-		  val yDistByPtoC = {
-			  val partitions : Seq[(String, Partition[Sim])] = Seq (
-			      ("child income", INCOME_GROUP_20 lift (_.income)), 
-			      ("parent income", INCOME_GROUP_20 liftOption (_.parent.map(_.income))) 
-			      )
-			  
-			   new AgentStatisticsCollector(agentAccessor, partitions, justCount, Some(2), 0 to endTime by 10)
-		  }
+		AgentStatisticsCollector<Model, Sim> pDistByAgeDec;
+		{
+			// create spec
+			StatisticsSpec<Sim> spec = new StatisticsSpec<Sim>();
+			// define the partitions
+			spec.addPartition("Age", Partitions.range(0.0, 1.0, 100.0).lift(age));
+			spec.addTimePartition("Decade", decadePartition);
+			// define the statistics
+			spec.addStatistic("Count", count);
+			
+			pDistByAgeDec = new AgentStatisticsCollector<Model, Sim>(sims, spec, decadePartition);
+		}
+	    AgentStatisticsCollector<Model, Sim> yDistByPtoC;
+	    {
+	    	// create spec
+	    	StatisticsSpec<Sim> spec = new StatisticsSpec<Sim>();
+	    	// define the partitions
+	    	spec.addPartition("child income", INCOME_GROUP_20.lift(income));
+	    	spec.addPartition("parent income", INCOME_GROUP_20.lift(income).lift(parent));
+	    	spec.addTimePartition("Decade", decadePartition);
+	    	// define the statistics
+	    	spec.addStatistic("Count", count);
+	    	
+	    	yDistByPtoC = new AgentStatisticsCollector<Model, Sim>(sims, spec, decadePartition);
+	    }
+	    EventStatisticsCollector<DeathEvent, DeathEvent> deathsByAgeDec;
+	    {
+	    	// create spec
+	    	StatisticsSpec<DeathEvent> spec = new StatisticsSpec<DeathEvent>();
+	    	// define the partitions
+	    	spec.addPartition("Age", Partitions.range(0, 5, 100).lift(ageAtDeath));
+	    	spec.addTimePartition("Decade", decadePartition);
+	    	// define stats
+	    	spec.addStatistic("Deaths during decade", Statistics.<DeathEvent>count());
+	    	spec.addStatistic("Average age at death", Statistics.mean.on(ageAtDeath));
+	    	
+	    	deathsByAgeDec = new EventStatisticsCollector<DeathEvent, DeathEvent>(deathEventClass, spec, decadePartition);
+	    }
+	    EventStatisticsCollector<DeathEvent, DeathEvent> lifeExpectancy;
+	    {
+	    	// create spec
+	    	StatisticsSpec<DeathEvent> spec = new StatisticsSpec<DeathEvent>();
+	    	// define the partition
+	    	spec.addTimePartition("Decade", decadePartition);
+	    	// define stats
+	    	spec.addStatistic("Life Expectancy", Statistics.mean.on(ageAtDeath));
+	    	
+	    	lifeExpectancy = new EventStatisticsCollector<DeathEvent, DeathEvent>(deathEventClass, spec, decadePartition);
+	    }
+
+
 		  
-		  // 3. define the EventStatisticsCollectors
-		  
-		  val deathsByYear = {
-		    val partitions : Seq [(String, Partition[DeathReport])] = Seq (
-		        ("Age", Partition.range(0, 100, 5).lift(_.sim.age))
-		        )
-		    val stats : Seq [(String, Seq[DeathReport] => Double)] = Seq (
-		       ("Deaths during decade", _ length),
-		       ("Average Age at Death", _ map (_.sim.age) average)
-		       )
-		    new EventStatisticsCollector[EventReport, DeathReport](EventReport.toDeath, partitions, stats, Some(1), 0 to endTime by 10)
-		  }
-		  
-		  val lifeExpectancy = {
-		    val stats : Seq [(String, Seq[DeathReport] => Double)] = Seq (
-		        ("Life Expectancy", _ map (_.sim.age) average) // TODO is this right?
-		        )
-		    new EventStatisticsCollector[EventReport, DeathReport](EventReport.toDeath, Seq(), stats, Some(0), 0 to endTime by 10)
-		  }
-		  
-		  // 4. add all the observers 
-		  model.addObserver(avgsByYear)
-		  model.addObserver(hDistByAgeDec)
-		  model.addObserver(pDistByAgeDec)
-		  model.addObserver(yDistByPtoC)
-		  model.addObserver(deathsByYear)
-		  model.addObserver(lifeExpectancy)
-		  */
-		  
-		  
-		  addAgentCollector("AvgsByYear", avgsByYear);
-		  addAgentCollector("HDistByAgeDec", hDistByAgeDec);
+		// add all the collectors to the underlying ABMStats object  
+	    addAgentCollector("AvgsByYear", avgsByYear);
+	    addEventCollector("DeathsByAgeDec", deathsByAgeDec);
+	    addAgentCollector("HDistByAgeDec", hDistByAgeDec);
+	    addEventCollector("LifeExpectancy", lifeExpectancy);
+	    addAgentCollector("PDistByAgeDec", pDistByAgeDec);
+	    addAgentCollector("YDistByPtoC", yDistByPtoC);
+	    
 	}
 
 }

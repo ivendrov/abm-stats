@@ -2,6 +2,7 @@ package ca.usask.abm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * Consists entirely of static methods used to create and combine common types of partitions
@@ -94,4 +95,44 @@ public class Partitions {
 			 
 		 };
 	 }
+
+	 /**
+	  * Creates a partition with the given collection, associating each element with its index
+	  * Note: like the Java Collections Framework, this method relies on equals to check for 
+	  * membership.
+	  * with 
+	  * @param col the given collection
+	  * @param <U> the type of collection element
+	  * @return the resulting partition
+	  */
+	 public static <U> Partition<U> fromIterable(final Iterable<U> col){
+		 final HashMap<U, Integer> indices = new HashMap<U, Integer>();
+		 int i = 0;
+		 for (U u : col){
+			 indices.put(u, i);
+		 }
+		 return new Partition<U>(){
+
+			@Override
+			public int maxID() {
+				return indices.size();
+			}
+
+			@Override
+			public int toID(U elem) {
+				if (indices.containsKey(elem)){
+					return indices.get(elem);
+				} else return INVALID_ID;
+			}
+
+			@Override
+			public String idLabel(int id) {
+				return String.valueOf(id);
+			}
+			 
+		 };
+	 }
+
 }
+
+

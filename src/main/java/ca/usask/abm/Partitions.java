@@ -81,6 +81,7 @@ public class Partitions {
 				int index = 0;
 				for (double e : endpoints){
 					if (elem < e) return index;
+					index++;
 				}
 				// must be greater than any element in the collection
 				return maxID();

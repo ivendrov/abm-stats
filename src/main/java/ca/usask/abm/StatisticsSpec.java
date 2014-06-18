@@ -19,7 +19,13 @@ import java.util.List;
  */
 public class StatisticsSpec<T> {
 	
-	private final Function<T, Boolean> condition;
+	private Function<T, Boolean> condition;
+	
+	
+	public void setCondition(Function<T, Boolean> condition) {
+		this.condition = condition;
+	}
+
 	private final Collection<Named<Partition<Timed<T>>>> partitions;
 	private final Collection<Named<Statistic<T>>> statistics;
 	

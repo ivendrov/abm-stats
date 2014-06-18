@@ -2,7 +2,6 @@ package ca.usask.abm;
 
 import java.util.Collection;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 /**
@@ -58,6 +57,20 @@ public class Statistics {
    }
    
    /**
+    * A statistic that computes the sum of all elements in the collection
+    */
+   public static Statistic<Double> sum = new Statistic<Double>(){
+
+	@Override
+	public Double apply(Collection<Double> data) {
+		double sum = 0;
+		for (double d : data) sum += d;
+		return sum;
+	}
+	   
+   };
+   
+   /**
     * a statistic that computes the mean of all elements in the collection,
     * or returns 0 if the collection is empty.
     */
@@ -90,8 +103,13 @@ public class Statistics {
 			@Override
 			public Double apply(Collection<Double> data) {
 				// convert to array
-				double[] d = ArrayUtils.toPrimitive((Double[]) data.toArray());
-				
+				double[] d = new double[data.size()];
+				int i = 0;
+				for (double datum : data){
+					d[i] = datum;
+					i++;
+				}
+				// evaluate
 				return p.evaluate(d);
 			}
 			
